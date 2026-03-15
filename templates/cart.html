@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Корзина — Coffee Network{% endblock %}
+
+{% block content %}
+  <h1>Корзина</h1>
+
+  {% if not selected_shop %}
+    <div class="alert alert--warning">Выберите кофейню в шапке.</div>
+  {% endif %}
+
+  {% if not cart %}
+    <p class="muted">Корзина пустая.</p>
+  {% else %}
+    <div class="split">
+
+      <!-- LEFT: CART ITEMS -->
+      <div class="cart-list">
+        {% for it in items %}
+          <div class="cart-row">
+            <!-- product -->
+            <div class="cart-product">
+              <div class="cart-title">{{ it.name }}</div>
+              <div class="cart-sub muted">{{ "%.2f"|format(it.price_rub) }} ₽</div>
+            </div>
+
+            <!-- qty -->
+            <form method="post" action="{{ url_for('cart_update') }}" class="cart-qty">
+              <input type="hidden" name="item_id" value="{{ it.id }}">
+              <input class="qty" type="number" name="qty" value="{{ it.qty }}" min="1" max="50">
+              <button class="btn btn--ghost" type="submit">Обновить</button>
+            </form>
+
+            <!-- line total -->
+            <div class="cart-sum">{{ "%.2f"|format(it.line_total) }} ₽</div>
+
+            <!-- remove -->
+            <form method="post" action="{{ url_for('cart_remove') }}" class="cart-remove">
+              <input type="hidden" name="item_id" value="{{ it.id }}">
+              <button class="btn btn--danger" type="submit" title="Удалить">✕</button>
+            </form>
+          </div>
+        {% endfor %}
+      </div>
+
+      <!-- RIGHT: SUMMARY -->
+      <div class="card">
+        <div class="card__body">
+          <div class="strong">Итого: {{ "%.2f"|format(total) }} ₽</div>
+
+          <form method="post" action="{{ url_for('cart_checkout') }}" class="stack">
+            <label class="form__label">Комментарий к заказу</label>
+            <textarea class="input" name="comment" rows="3" placeholder="Например: без сахара"></textarea>
+
+            <button class="btn btn--primary" type="submit">Оформить заказ</button>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  {% endif %}
+{% endblock %}

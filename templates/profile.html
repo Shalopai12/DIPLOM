@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Профиль — Coffee Network{% endblock %}
+
+{% block content %}
+  <h1>Профиль</h1>
+
+  <section class="section">
+    <h2>Мои заказы</h2>
+    {% if not orders %}
+      <p class="muted">Пока нет заказов.</p>
+    {% else %}
+      <div class="stack">
+        {% for o in orders %}
+          <div class="card">
+            <div class="card__body">
+              <div class="row space">
+                <div class="strong">Заказ #{{ o.id }}</div>
+                <div class="pill">{{ o.status }}</div>
+              </div>
+              <div class="muted">{{ o.created_at }}</div>
+              <div class="muted">Кофейня: {{ o.shop_name }} — {{ o.shop_address }}</div>
+              <div class="strong">Сумма: {{ "%.2f"|format(o.total_rub) }} ₽</div>
+              {% if o.comment %}
+                <div class="muted">Комментарий: {{ o.comment }}</div>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </section>
+
+  <section class="section">
+    <h2>Мои отзывы</h2>
+    {% if not my_reviews %}
+      <p class="muted">Отзывов пока нет.</p>
+    {% else %}
+      <div class="stack">
+        {% for r in my_reviews %}
+          <div class="card">
+            <div class="card__body">
+              <div class="row space">
+                <div class="stars">★ {{ r.rating }}/5</div>
+                <div class="muted">{{ r.created_at }}</div>
+              </div>
+              <div class="muted">Тип: {{ r.target_type }} {% if r.target_id %} (#{{ r.target_id }}){% endif %}</div>
+              <div>{{ r.text }}</div>
+              <div class="muted small">
+                {% if r.is_approved == 1 %}Опубликован{% else %}На модерации{% endif %}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </section>
+{% endblock %}

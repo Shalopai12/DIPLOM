@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}Coffee Network{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+
+  {% include "_header.html" %}
+
+  <main class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="alerts">
+          {% for category, msg in messages %}
+            <div class="alert alert--{{ category }}">{{ msg }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  {% include "_footer.html" %}
+
+  <!-- Auth Modal -->
+  <div class="modal" id="authModal" aria-hidden="true">
+    <div class="modal__overlay" data-close-modal></div>
+
+    <div class="modal__dialog" role="dialog" aria-modal="true">
+      <button class="modal__close" type="button" data-close-modal>✕</button>
+
+      <!-- LOGIN -->
+      <div id="loginView">
+        <h3 class="modal__title">Вход</h3>
+
+        <form method="post" action="{{ url_for('auth_login') }}" class="form" autocomplete="on">
+          <label class="form__label">Email</label>
+          <input class="form__input" type="email" name="email" required autocomplete="email">
+
+          <label class="form__label">Пароль</label>
+          <input class="form__input" type="password" name="password" required autocomplete="current-password">
+
+          <button class="btn btn--primary" type="submit">Войти</button>
+
+          <div class="form__hint">
+            Нет аккаунта?
+            <a href="#" id="showRegister">Регистрация</a>
+          </div>
+        </form>
+      </div>
+
+      <!-- REGISTER -->
+      <div id="registerView" class="hidden">
+        <button class="btn btn--ghost modal__back" type="button" id="showLogin">← Вернуться</button>
+
+        <h3 class="modal__title">Регистрация</h3>
+
+        <form method="post" action="{{ url_for('auth_register') }}" class="form" autocomplete="on">
+          <label class="form__label">Имя</label>
+          <input class="form__input" type="text" name="full_name" placeholder="Иван Петров" autocomplete="name">
+
+          <label class="form__label">Телефон</label>
+          <input class="form__input" type="text" name="phone" placeholder="+7..." autocomplete="tel">
+
+          <label class="form__label">Email</label>
+          <input class="form__input" type="email" name="email" required autocomplete="email">
+
+          <label class="form__label">Пароль</label>
+          <input class="form__input" type="password" name="password" required autocomplete="new-password">
+
+          <button class="btn btn--primary" type="submit">Зарегистрироваться</button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

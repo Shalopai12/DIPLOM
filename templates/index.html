@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Главная — Coffee Network{% endblock %}
+
+{% block content %}
+  <section class="hero">
+    <h1>Кофе рядом. Быстро. Вкусно.</h1>
+    <p class="muted">Выберите кофейню и оформляйте заказ прямо на сайте.</p>
+  </section>
+
+  <section class="section">
+    <h2>Новости</h2>
+    {% if news %}
+      <div class="stack">
+        {% for n in news %}
+          <div class="news">
+            <div class="news__title">{{ n.title }}</div>
+            <div class="muted">{{ (n.published_at or n.created_at) }}</div>
+            <div class="news__text">{{ n.content }}</div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="muted">Пока новостей нет.</p>
+    {% endif %}
+  </section>
+
+  <section class="section">
+    <h2>Популярное</h2>
+    {% if popular %}
+      <div class="grid">
+        {% for p in popular %}
+          <div class="card">
+            <div class="card__img">
+              <img src="{{ p.image_url or '/static/img/placeholder.png' }}" alt="">
+            </div>
+            <div class="card__body">
+              <div class="card__title">{{ p.name }}</div>
+              <div class="card__price">{{ "%.2f"|format(p.price_rub) }} ₽</div>
+
+              <form method="post" action="{{ url_for('cart_add') }}">
+                <input type="hidden" name="product_id" value="{{ p.id }}">
+                <input type="hidden" name="qty" value="1">
+                <button class="btn btn--primary" type="submit">В корзину</button>
+              </form>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="muted">Популярных товаров пока нет.</p>
+    {% endif %}
+  </section>
+
+  <section class="section">
+    <h2>Отзывы о нас</h2>
+    {% if brand_reviews %}
+      <div class="grid">
+        {% for r in brand_reviews %}
+          <div class="card">
+            <div class="card__body">
+              <div class="stars">★ {{ r.rating }}/5</div>
+              <div class="muted">{{ r.full_name or "Гость" }}</div>
+              <div>{{ r.text }}</div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="muted">Пока нет отзывов.</p>
+    {% endif %}
+  </section>
+{% endblock %}
